@@ -27,7 +27,7 @@ var config = {
 	httpsPrivateKey: "", 	// HTTPS private key path, only require when useHttps is true
 	httpsCertificate: "", 	// HTTPS Certificate path, only require when useHttps is true
 
-	language: "en",
+	language: "it",
 	logLevel: ["INFO", "LOG", "WARN", "ERROR"], // Add "DEBUG" for even more logging
 	timeFormat: 24,
 	units: "metric",
@@ -39,6 +39,21 @@ var config = {
 
 	modules: [
 		{
+        		module: "MMM-Page-Selector",
+        		position: "top_center",
+        		config: {
+            			defaultPage: "main",
+            			displayTitle: true,
+            			selectPageNotif: ["SELECT_PAGE"],
+            			incrementPageNotif: ["PAGE_UP"],
+            			decrementPageNotif: ["PAGE_DOWN"],
+	    			persistentPages: true,
+	    			},
+			autoChange: {
+	    			interval: 100
+	    		}
+    		},
+		{
 			module: "alert",
 		},
 		{
@@ -47,30 +62,70 @@ var config = {
 		},
 		{
 			module: "clock",
-			position: "top_left"
+			position: "top_left",
+			config: {
+				showSunTimes: true,
+				showMoonTimes: true,
+				lat: 46.0637,
+				lon: 13.24458,
+				locationID: "5128581", //ID from http://bulk.openweathermap.org/sample/city.list.json.gz; unzip the gz file and find your city
+				appid: "YOUR_OPENWEATHER_API_KEY"
+			}
 		},
 		{
 			module: "calendar",
-			header: "US Holidays",
+			header: "Calendario",
 			position: "top_left",
 			config: {
 				calendars: [
 					{
 						symbol: "calendar-check",
-						url: "webcal://www.calendarlabs.com/ical-calendar/ics/76/US_Holidays.ics"					}
+						url: "https://calendar.google.com/calendar/ical/it.italian%23holiday%40group.v.calendar.google.com/public/basic.ics"	},
+					{
+						symbol: "calendar-alt",
+						url: "https://calendar.google.com/calendar/ical/gabridomin99%40gmail.com/private-b67cf8a93fe6017e2d9285507fff6efa/basic.ics"
+					}
 				]
 			}
 		},
 		{
 			module: "compliments",
-			position: "lower_third"
+			position: "lower_third",
+			config: {
+				compliments: {
+					anytime: [
+						"Hey amico!"
+					],
+					morning: [
+						"Buongiorno, sarà una super giornata!",
+						"Divertiti oggi!",
+						"Dormito bene?"
+					],
+					afternoon: [
+						"Hai ancora molto da fare oggi!",
+						"Stai alla grande!",
+						"Ti vedo in forma oggi!"
+					],
+					evening: [
+						"Sono sicuro che è stata una fantastica giornata!",
+						"Hai dato il massimo!",
+						"Ti aspetta un meritato riposo"
+					],
+					"....-01-01": [
+						"Happy new year!"
+					],
+					"....-05-25": [
+						"Buon compleanno!"
+					]
+				}
+			}
 		},
 		{
 			module: "currentweather",
 			position: "top_right",
 			config: {
-				location: "New York",
-				locationID: "5128581", //ID from http://bulk.openweathermap.org/sample/city.list.json.gz; unzip the gz file and find your city
+				location: "Udine",
+				locationID: "3165072", //ID from http://bulk.openweathermap.org/sample/city.list.json.gz; unzip the gz file and find your city
 				appid: "YOUR_OPENWEATHER_API_KEY"
 			}
 		},
@@ -79,8 +134,8 @@ var config = {
 			position: "top_right",
 			header: "Weather Forecast",
 			config: {
-				location: "New York",
-				locationID: "5128581", //ID from http://bulk.openweathermap.org/sample/city.list.json.gz; unzip the gz file and find your city
+				location: "Udine",
+				locationID: "3165072", //ID from http://bulk.openweathermap.org/sample/city.list.json.gz; unzip the gz file and find your city
 				appid: "YOUR_OPENWEATHER_API_KEY"
 			}
 		},
@@ -100,7 +155,157 @@ var config = {
 				broadcastNewsUpdates: true
 			}
 		},
-	]
+		{
+			module: 'MMM-AirQuality',
+			position: 'top_center', // you may choose any location
+			config: {
+	  			location: 'italy/friuli-venezia-giulia/udine/v.cairoli/' // the location to check the index for
+			}
+		},
+		{
+			module: 'MMM-News-QR',
+    			config: {
+				updateType: 'polling',
+				interval: 10000,
+       				colorDark: '#0080ff',
+				colorLight: '#EE7F11',
+				imageSize: 200
+    			}
+		},
+		{
+           		 module: 'MMM-CoinMarketCap',
+            		position: "top_left",
+    			header: "Cryptocurrencies",
+            		config: {
+                		apiKey: '9b98bcb7-0c46-4d06-95a7-ec60d5a3215c',
+                		currencies: ['bitcoin', 'ethereum', 'polkadot'],
+                		view: 'graphWithChanges',
+               			 conversion: 'EUR',
+           			 }
+        	},
+		{
+    			module: 'MMM-1-Second-A-Day',
+    			config:{
+        			driveDestination: 'DESTINATION_TO_DRIVE_FOLDER'
+    				}
+		},
+                {
+  			module: "MMM-GroveGestures",
+  			position: "bottom_right",
+  			config: {
+    				autoStart: true, //When Mirror starts, recognition will start.
+    				verbose:false, // If set as `true`, useful messages will be logged.
+    				recognitionTimeout: 1000, //Gesture sequence will be ended after this time from last recognized gesture.
+    				cancelGesture: "WAVE", //If set, You can cancel gesture sequence with this gesture.
+    				visible: true, //Recognized gesture sequence will be displayed on position
+
+    				idleTimer: 0, // `0` for disable, After this time from last gesture, onIdle will be executed.
+   			 	onIdle: { // See command section
+      					moduleExec: {
+        				module: [],
+        				exec: (module, gestures) => {
+          					module.hide(1000, null, {lockstring:"GESTURE"})
+        					}
+      					}
+    				},
+    				onDetected: {
+      					notificationExec: {
+        					notification: "GESTURE_DETECTED",
+      					},
+    				},
+
+    				gestureMapFromTo: { //When your sensor is installed with rotated direction, you can calibrate with this.
+      					"Up": "UP",
+      					"Down": "DOWN",
+      					"Left": "LEFT",
+      					"Right": "RIGHT",
+      					"Forward": "FORWARD",
+      					"Backward": "BACKWARD",
+      					"Clockwise": "CLOCKWISE",
+      					"anti-clockwise": "ANTICLOCKWISE",
+      					"wave": "WAVE"
+    				},
+
+    				defaultNotification: "GESTURE",
+    				pythonPath: "/usr/bin/python", // your python path
+
+    				defaultCommandSet: "default",
+    				commandSet: {
+      					"default": {
+        					"FORWARD-BACKWARD": {
+          						notificationExec: {
+            							notification: "PAGE_UP",
+            							payload: null
+          						}
+        					},
+        					"LEFT-RIGHT": {
+          						notificationExec: {
+            							notification: "PAGE_DOWN",
+            							payload:null,
+          						}
+        					},
+        					"CLOCKWISE": {
+          						moduleExec: {
+            							module: [],
+            							exec: (module, gestures) => {
+              								module.hide(1000, null, {lockstring:"GESTURE"})
+            							}
+          						}
+        					},
+        					"ANTICLOCKWISE": {
+          						moduleExec: {
+            							module: [],
+            							exec: (module, gestures) => {
+              								module.show(1000, null, {lockstring:"GESTURE"})
+            							}
+          						}
+        					},
+        					"LEFT": {
+          						notificationExec: {
+            							notification: "ARTICLE_PREVIOUS",
+            							payload: null,
+          						}
+        					},
+        					"RIGHT": {
+          						notificationExec: {
+            							notification: "ARTICLE_NEXT",
+            							payload: null,
+          						}
+        					},
+      					},
+    				},
+  			}
+		},
+		{
+			module: "MMM-APOD",
+			position: "top_left",
+			config: {
+				appid: "YOUR_NASA_API_KEY", // NASA API key (api.nasa.gov),
+				maxMediaWidth: 300,
+				maxMediaHeight: 800
+			}
+		}
+	],
+	pages: {
+    		"main": {
+			"calendar": "top_left",
+			"compliments": "lower_third",
+                        "weatherforecast": "top_right",
+                        "newsfeed": "bottom_bar"
+
+    		},
+    		"second": {
+    			"MMM-AirQuality": "lower_third",
+			"MMM-CoinMarketCap": "top_left",
+			"MMM-APOD": "top_right"
+    		}
+	},
+	exclusions: {
+   		 "updatenotification": "top_bar",
+		"clock": "top_left",
+		"currentweather": "top_right",
+		"MMM-GroveGestures": "bottom_right"
+	}
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
