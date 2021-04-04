@@ -1,10 +1,4 @@
-# USAGE
-# When encoding on laptop, desktop, or GPU (slower, more accurate):
-# python encode_faces.py --dataset dataset --encodings encodings.pickle --detection-method cnn
-# When encoding on Raspberry Pi (faster, more accurate):
 # python encode_faces.py --dataset dataset --encodings encodings.pickle --detection-method hog
-
-# import the necessary packages
 from imutils import paths
 import face_recognition
 import argparse
@@ -18,7 +12,7 @@ ap.add_argument("-i", "--dataset", required=True,
 	help="path to input directory of faces + images")
 ap.add_argument("-e", "--encodings", required=True,
 	help="path to serialized db of facial encodings")
-ap.add_argument("-d", "--detection-method", type=str, default="cnn",
+ap.add_argument("-d", "--detection-method", type=str, default="hog",
 	help="face detection model to use: either `hog` or `cnn`")
 args = vars(ap.parse_args())
 
